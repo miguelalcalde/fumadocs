@@ -1,9 +1,12 @@
 import createBundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 let createMDX: ((options?: Record<string, unknown>) => (config: NextConfig) => NextConfig) | undefined;
 try {
-  ({ createMDX } = await import('fumadocs-mdx/next'));
+  ({ createMDX } = require('fumadocs-mdx/next'));
 } catch {
   console.warn('[next.config] fumadocs-mdx/next not available, skipping MDX plugin');
 }
