@@ -1,6 +1,12 @@
 import createBundleAnalyzer from '@next/bundle-analyzer';
-import { createMDX } from 'fumadocs-mdx/next';
 import type { NextConfig } from 'next';
+
+let createMDX: ((options?: Record<string, unknown>) => (config: NextConfig) => NextConfig) | undefined;
+try {
+  ({ createMDX } = await import('fumadocs-mdx/next'));
+} catch {
+  console.warn('[next.config] fumadocs-mdx/next not available, skipping MDX plugin');
+}
 
 const withAnalyzer = createBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -44,6 +50,6 @@ const config: NextConfig = {
   },
 };
 
-const withMDX = createMDX();
+const withMDX = createMDX?.();
 
-export default withAnalyzer(withMDX(config));
+export default withAnalyzer(withMDX ? withMDX(config) : config);
